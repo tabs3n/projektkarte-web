@@ -126,7 +126,7 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
 
       const W = Math.round(container.getBoundingClientRect().width) || document.documentElement.clientWidth || 1200
       const isMobile = W < 600
-      const H = Math.round(W * (isMobile ? 0.85 : 0.52))
+      const H = Math.round(W * (isMobile ? 0.62 : 0.52))
 
       const svg = d3.select(container).append('svg')
         .attr('viewBox', `0 0 ${W} ${H}`)
@@ -140,7 +140,7 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
       const proj = d3.geoNaturalEarth1().scale(W / 6.3).translate([W / 2, H / 2])
       const path = d3.geoPath(proj)
 
-      fetch('https://unpkg.com/world-atlas@2.0.2/countries-110m.json')
+      fetch('https://unpkg.com/world-atlas@2.0.2/countries-50m.json')
         .then(r => r.json())
         .then(world => {
           const countries = window.topojson.feature(world, world.objects.countries).features
@@ -171,7 +171,7 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
               if (a3 && byCountry[a3]) openModal(a3)
             })
 
-          const MARKER_R = 10
+          const MARKER_R = isMobile ? 6 : 9
           const markersG = g.append('g')
           Object.entries(byCountry).forEach(([iso, ps]) => {
             const withCoords = ps.find(p => p.lat != null && p.lng != null)
@@ -186,7 +186,7 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
             markersG.append('text')
               .attr('x', x).attr('y', y + 3.5)
               .attr('text-anchor', 'middle')
-              .attr('font-family', SANS).attr('font-size', 10).attr('font-weight', 600)
+              .attr('font-family', SANS).attr('font-size', isMobile ? 7 : 9).attr('font-weight', 600)
               .attr('fill', '#1a1a1a')
               .attr('pointer-events', 'none')
               .text(ps.length)
@@ -205,18 +205,10 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
               g.attr('transform', evt.transform)
               const k = evt.transform.k
               markersG.selectAll('circle:nth-child(3n+1)').attr('r', MARKER_R / k).attr('stroke-width', 1.2 / k)
-              markersG.selectAll('text').attr('font-size', 10 / k)
+              markersG.selectAll('text').attr('font-size', (isMobile ? 7 : 9) / k)
               markersG.selectAll('circle:nth-child(3n+3)').attr('r', (MARKER_R + 2) / k)
             })
           svg.call(zoom)
-
-          if (isMobile) {
-            const europe = proj([10, 50]) ?? [W / 2, H / 2]
-            const initialK = 2.5
-            const tx = W / 2 - europe[0] * initialK
-            const ty = H / 2 - europe[1] * initialK
-            svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(initialK))
-          }
 
           if (!container) return
           const zoomEl = document.createElement('div')
