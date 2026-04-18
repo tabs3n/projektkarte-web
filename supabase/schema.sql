@@ -11,8 +11,14 @@ create table if not exists projects (
   client      text,
   blurb       text,
   quote       text,
+  lat         double precision,
+  lng         double precision,
   created_at  timestamptz default now()
 );
+
+-- Migration for existing tables:
+alter table projects add column if not exists lat double precision;
+alter table projects add column if not exists lng double precision;
 
 -- Images linked to a project (ordered)
 create table if not exists project_images (

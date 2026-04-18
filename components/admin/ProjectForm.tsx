@@ -46,6 +46,8 @@ export default function ProjectForm({ project, mode }: Props) {
     client: project?.client ?? '',
     blurb: project?.blurb ?? '',
     quote: project?.quote ?? '',
+    lat: project?.lat?.toString() ?? '',
+    lng: project?.lng?.toString() ?? '',
   })
 
   function set(field: string, value: string) {
@@ -166,6 +168,14 @@ export default function ProjectForm({ project, mode }: Props) {
 
       {field('Kurzbeschreibung', 'blurb', { textarea: true })}
       {field('Zitat (optional)', 'quote')}
+
+      <div className="grid grid-cols-2 gap-4">
+        {field('Breitengrad (Lat, optional)', 'lat')}
+        {field('Längengrad (Lng, optional)', 'lng')}
+      </div>
+      <p className="text-xs text-stone-500 -mt-3">
+        Pin-Position: z.B. Berlin 52.52 / 13.40. Leer lassen → Pin erscheint im Land-Zentrum. Koordinaten finden auf <a href="https://www.google.com/maps" target="_blank" rel="noreferrer" className="underline">Google Maps</a> (Rechtsklick auf Ort).
+      </p>
 
       {/* Image upload */}
       <div>

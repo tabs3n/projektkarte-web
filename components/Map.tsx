@@ -126,7 +126,7 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
 
       const W = Math.round(container.getBoundingClientRect().width) || document.documentElement.clientWidth || 1200
       const isMobile = W < 600
-      const H = Math.round(W * (isMobile ? 0.7 : 0.52))
+      const H = Math.round(W * (isMobile ? 0.85 : 0.52))
 
       const svg = d3.select(container).append('svg')
         .attr('viewBox', `0 0 ${W} ${H}`)
@@ -149,7 +149,7 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
             .attr('d', (d: GeoFeature) => path(d as Parameters<typeof path>[0]) ?? '')
             .attr('fill', (d: GeoFeature) => {
               const a3 = ID_TO_A3[String(d.id).padStart(3, '0')]
-              return a3 && byCountry[a3] ? accent : '#e8e3d5'
+              return a3 && byCountry[a3] ? accent : '#b8b3a3'
             })
             .attr('stroke', '#f5f2ea')
             .attr('stroke-width', 0.6)
@@ -164,7 +164,7 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
             })
             .on('mouseout', function (this: SVGPathElement, _: MouseEvent, d: GeoFeature) {
               const a3 = ID_TO_A3[String(d.id).padStart(3, '0')]
-              d3.select(this).attr('fill', a3 && byCountry[a3] ? accent : '#e8e3d5')
+              d3.select(this).attr('fill', a3 && byCountry[a3] ? accent : '#b8b3a3')
             })
             .on('click', (_: MouseEvent, d: GeoFeature) => {
               const a3 = ID_TO_A3[String(d.id).padStart(3, '0')]
@@ -174,7 +174,10 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
           const MARKER_R = 10
           const markersG = g.append('g')
           Object.entries(byCountry).forEach(([iso, ps]) => {
-            const coord = CENTROIDS[iso]
+            const withCoords = ps.find(p => p.lat != null && p.lng != null)
+            const coord: [number, number] | undefined = withCoords
+              ? [withCoords.lng as number, withCoords.lat as number]
+              : CENTROIDS[iso]
             if (!coord) return
             const [x, y] = proj(coord) ?? [0, 0]
             markersG.append('circle')
@@ -193,7 +196,7 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
               .on('click', () => openModal(iso))
           })
 
-          const zoom = d3.zoom().scaleExtent([1, 8])
+          const zoom = d3.zoom().scaleExtent([1, 20])
             .filter((evt: Event) => {
               if ((evt as TouchEvent).touches) return (evt as TouchEvent).touches.length >= 2
               return !(evt as MouseEvent).button
@@ -206,6 +209,14 @@ export default function Map({ projects, accent = '#1e3a5f' }: Props) {
               markersG.selectAll('circle:nth-child(3n+3)').attr('r', (MARKER_R + 2) / k)
             })
           svg.call(zoom)
+
+          if (isMobile) {
+            const europe = proj([10, 50]) ?? [W / 2, H / 2]
+            const initialK = 2.5
+            const tx = W / 2 - europe[0] * initialK
+            const ty = H / 2 - europe[1] * initialK
+            svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(initialK))
+          }
 
           if (!container) return
           const zoomEl = document.createElement('div')

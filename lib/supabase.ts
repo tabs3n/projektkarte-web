@@ -20,6 +20,8 @@ export type Project = {
   client: string | null
   blurb: string | null
   quote: string | null
+  lat: number | null
+  lng: number | null
   created_at: string
   project_images?: ProjectImage[]
 }

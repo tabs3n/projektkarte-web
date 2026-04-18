@@ -4,11 +4,12 @@ import { notFound } from 'next/navigation'
 
 export const revalidate = 0
 
-export default async function EditProjectPage({ params }: { params: { id: string } }) {
+export default async function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const { data: project } = await supabaseAdmin
     .from('projects')
     .select('*, project_images(*)')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (!project) notFound()

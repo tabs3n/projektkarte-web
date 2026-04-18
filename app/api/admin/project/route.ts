@@ -26,6 +26,8 @@ export async function POST(req: NextRequest) {
     client: (fd.get('client') as string) || null,
     blurb: (fd.get('blurb') as string) || null,
     quote: (fd.get('quote') as string) || null,
+    lat: fd.get('lat') ? Number(fd.get('lat')) : null,
+    lng: fd.get('lng') ? Number(fd.get('lng')) : null,
   }
 
   let projectId = id
