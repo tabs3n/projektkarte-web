@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-stone-50 font-mono">
+    <div className="min-h-screen bg-stone-50 font-mono text-stone-900" style={{colorScheme:'light'}}>
       <nav className="border-b border-stone-200 bg-white px-6 py-3 flex items-center gap-6">
         <Link href="/admin" className="font-bold text-stone-900 tracking-tight">
           Projektkarte Admin

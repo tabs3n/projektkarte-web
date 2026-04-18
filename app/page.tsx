@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase'
 import Map from '@/components/Map'
 import Script from 'next/script'
 
-export const revalidate = 60
+export const revalidate = 0
 
 export default async function HomePage() {
   const { data: projects } = await supabase
@@ -17,16 +17,21 @@ export default async function HomePage() {
       <Script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js" strategy="beforeInteractive" />
       <Script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" strategy="beforeInteractive" />
 
-      <main className="max-w-[1440px] mx-auto px-8 py-7 pb-20 relative z-10">
-        <header className="flex items-end justify-between gap-6 pb-4 mb-5 border-b border-dashed border-stone-800">
-          <h1 className="font-['Caveat'] font-bold text-5xl leading-none tracking-tight">Projektkarte</h1>
-          <div className="font-mono text-xs text-stone-400 text-right">
-            <div><b className="text-stone-900">{countryCount}</b> Länder · <b className="text-stone-900">{projects?.length ?? 0}</b> Projekte</div>
+      <main style={{ maxWidth: 1440, margin: '0 auto', padding: '28px 32px 80px' }}>
+        <header style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, paddingBottom: 18, marginBottom: 20, borderBottom: '1.5px dashed #1a1a1a' }}>
+          <h1 style={{ fontFamily: "'Caveat', cursive", fontWeight: 700, fontSize: 48, margin: 0, lineHeight: 1, color: '#1a1a1a' }}>
+            Projektkarte
+          </h1>
+          <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#8a8578', textAlign: 'right' }}>
+            <div>
+              <b style={{ color: '#1a1a1a' }}>{countryCount}</b> Länder ·{' '}
+              <b style={{ color: '#1a1a1a' }}>{projects?.length ?? 0}</b> Projekte
+            </div>
           </div>
         </header>
 
-        <div className="border border-stone-900 shadow-[4px_4px_0_#1a1a1a] overflow-hidden relative">
-          <Map projects={projects ?? []} />
+        <div style={{ border: '1.5px solid #1a1a1a', boxShadow: '4px 4px 0 #1a1a1a', overflow: 'hidden', position: 'relative', width: '100%' }}>
+          <Map projects={projects ?? []} accent="#1e3a5f" />
         </div>
       </main>
     </>

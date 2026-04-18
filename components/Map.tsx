@@ -130,17 +130,20 @@ export default function Map({ projects, accent = '#ff5722' }: Props) {
       const d3 = window.d3
       container.innerHTML = ''
 
-      const W = container.getBoundingClientRect().width || window.innerWidth
-      const isMobile = window.innerWidth < 600
-      const H = Math.round(W * (isMobile ? 0.7 : 0.52))
+      const W = Math.round(container.getBoundingClientRect().width) || document.documentElement.clientWidth || 1200
+      const isMobile = W < 600
+      const H = Math.round(W * (isMobile ? 0.75 : 0.5))
 
       const svg = d3.select(container).append('svg')
         .attr('viewBox', `0 0 ${W} ${H}`)
-        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .attr('width', W)
+        .attr('height', H)
+        .style('display', 'block')
         .style('touch-action', 'pan-y')
 
       const g = svg.append('g')
-      const proj = d3.geoMercator().center([15, 30]).scale(W / 7.2).translate([W / 2, H / 2])
+      // Natural Earth projection — shows full world cleanly
+      const proj = d3.geoNaturalEarth1().scale(W / 6.3).translate([W / 2, H / 2])
       const path = d3.geoPath(proj)
 
       fetch('https://unpkg.com/world-atlas@2.0.2/countries-110m.json')
