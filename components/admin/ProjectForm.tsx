@@ -118,7 +118,8 @@ export default function ProjectForm({ project, mode }: Props) {
           onChange={e => set(key, e.target.value)}
           required={opts?.required}
           rows={3}
-          className="w-full border border-stone-200 px-3 py-2 text-sm text-stone-900 bg-white focus:outline-none focus:border-stone-500 resize-none"
+          style={{ color: '#1a1a1a', background: '#ffffff' }}
+          className="w-full border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:border-stone-600 resize-none"
         />
       ) : (
         <input
@@ -126,7 +127,8 @@ export default function ProjectForm({ project, mode }: Props) {
           value={form[key as keyof typeof form]}
           onChange={e => set(key, e.target.value)}
           required={opts?.required}
-          className="w-full border border-stone-200 px-3 py-2 text-sm text-stone-900 bg-white focus:outline-none focus:border-stone-500"
+          style={{ color: '#1a1a1a', background: '#ffffff' }}
+          className="w-full border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:border-stone-600"
         />
       )}
     </div>
@@ -142,7 +144,8 @@ export default function ProjectForm({ project, mode }: Props) {
             value={form.iso}
             onChange={e => set('iso', e.target.value)}
             required
-            className="w-full border border-stone-200 px-3 py-2 text-sm text-stone-900 bg-white focus:outline-none focus:border-stone-500"
+            style={{ color: '#1a1a1a', background: '#ffffff' }}
+            className="w-full border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:border-stone-600"
           >
             <option value="">— Land wählen —</option>
             {Object.entries(COUNTRY_CODES).sort(([, a], [, b]) => a.localeCompare(b, 'de')).map(([iso, name]) => (

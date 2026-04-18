@@ -40,22 +40,17 @@ const CENTROIDS: Record<string, [number, number]> = {
   MAR:[-7.09,31.79], ETH:[40.49,9.14], TZA:[34.89,-6.37],
 }
 
+const SANS = "var(--font-inter), -apple-system, BlinkMacSystemFont, system-ui, sans-serif"
+
 type Props = {
   projects: (Project & { project_images: { url: string; sort_order: number }[] })[]
   accent?: string
 }
 
-export default function Map({ projects, accent = '#ff5722' }: Props) {
+export default function Map({ projects, accent = '#1e3a5f' }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
 
-  const byIso: Record<string, typeof projects[0]> = {}
-  projects.forEach(p => {
-    if (!byIso[p.iso]) byIso[p.iso] = p
-    // group multiple projects per country
-  })
-
-  // Group projects by country
   const byCountry: Record<string, typeof projects> = {}
   projects.forEach(p => {
     if (!byCountry[p.iso]) byCountry[p.iso] = []
@@ -68,37 +63,36 @@ export default function Map({ projects, accent = '#ff5722' }: Props) {
     const name = countryProjects[0].country
 
     modalRef.current.innerHTML = `
-      <div style="background:#f5f2ea;border:1.5px solid #1a1a1a;box-shadow:6px 6px 0 #1a1a1a;
+      <div style="background:#ffffff;border:1px solid #1a1a1a;font-family:${SANS};color:#1a1a1a;
         width:min(720px,calc(100vw - 32px));max-height:calc(100vh - 60px);overflow:auto;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;
-          padding:18px 22px 12px;border-bottom:1.5px dashed #1a1a1a;gap:16px;">
+          padding:20px 24px 16px;border-bottom:1px solid #e5e0d4;gap:16px;">
           <div>
-            <div style="font-family:monospace;font-size:10px;color:#8a8578;text-transform:uppercase;
-              letter-spacing:1.5px;margin-bottom:4px;">Projekte in</div>
-            <h2 style="font-family:'Caveat',cursive;font-size:34px;margin:0;line-height:1;">${name}</h2>
+            <div style="font-size:11px;color:#6b6658;text-transform:uppercase;
+              letter-spacing:1.8px;margin-bottom:6px;font-weight:500;">Projekte in</div>
+            <h2 style="font-size:24px;margin:0;line-height:1.2;font-weight:600;letter-spacing:-0.01em;color:#1a1a1a;">${name}</h2>
           </div>
-          <button id="modal-close" style="background:transparent;border:1.5px solid #1a1a1a;
+          <button id="modal-close" style="background:transparent;border:1px solid #1a1a1a;
             width:32px;height:32px;cursor:pointer;font-size:14px;display:flex;align-items:center;
-            justify-content:center;flex-shrink:0;">✕</button>
+            justify-content:center;flex-shrink:0;color:#1a1a1a;">✕</button>
         </div>
-        <div style="padding:16px 22px 20px;">
+        <div style="padding:20px 24px 24px;">
           ${countryProjects.map(p => `
-            <div style="border:1px dashed #1a1a1a;padding:14px;margin-bottom:16px;">
-              <h3 style="font-family:'Caveat',cursive;font-size:24px;margin:0 0 4px;">${p.title}</h3>
-              <div style="font-family:monospace;font-size:10px;color:#8a8578;text-transform:uppercase;
-                letter-spacing:1.2px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:10px;">
-                ${p.city ? `<span>📍 <b style="color:#1a1a1a">${p.city}</b></span>` : ''}
-                ${p.year ? `<span>📅 <b style="color:#1a1a1a">${p.year}</b></span>` : ''}
-                ${p.client ? `<span>👤 <b style="color:#1a1a1a">${p.client}</b></span>` : ''}
+            <div style="border:1px solid #e5e0d4;padding:18px;margin-bottom:16px;background:#fafaf5;">
+              <h3 style="font-size:17px;margin:0 0 10px;font-weight:600;color:#1a1a1a;letter-spacing:-0.01em;">${p.title}</h3>
+              <div style="font-size:12px;color:#6b6658;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:18px;">
+                ${p.city ? `<span>Stadt: <b style="color:#1a1a1a;font-weight:600">${p.city}</b></span>` : ''}
+                ${p.year ? `<span>Jahr: <b style="color:#1a1a1a;font-weight:600">${p.year}</b></span>` : ''}
+                ${p.client ? `<span>Kunde: <b style="color:#1a1a1a;font-weight:600">${p.client}</b></span>` : ''}
               </div>
-              ${p.blurb ? `<p style="font-size:14px;line-height:1.5;margin:0 0 10px;">${p.blurb}</p>` : ''}
-              ${p.quote ? `<div style="font-family:'Caveat',cursive;font-size:18px;
-                border-left:3px solid ${accent};padding:2px 0 2px 10px;margin:10px 0;">"${p.quote}"</div>` : ''}
+              ${p.blurb ? `<p style="font-size:14px;line-height:1.6;margin:0 0 12px;color:#1a1a1a;">${p.blurb}</p>` : ''}
+              ${p.quote ? `<div style="font-size:14px;font-style:italic;color:#1a1a1a;
+                border-left:3px solid ${accent};padding:4px 0 4px 12px;margin:12px 0;line-height:1.5;">"${p.quote}"</div>` : ''}
               ${p.project_images?.length ? `
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px;">
                   ${p.project_images.sort((a, b) => a.sort_order - b.sort_order).slice(0, 3).map(img => `
                     <img src="${img.url}" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;
-                      border:1px solid #1a1a1a;" />
+                      border:1px solid #e5e0d4;" />
                   `).join('')}
                 </div>
               ` : ''}
@@ -132,17 +126,17 @@ export default function Map({ projects, accent = '#ff5722' }: Props) {
 
       const W = Math.round(container.getBoundingClientRect().width) || document.documentElement.clientWidth || 1200
       const isMobile = W < 600
-      const H = Math.round(W * (isMobile ? 0.75 : 0.5))
+      const H = Math.round(W * (isMobile ? 0.7 : 0.52))
 
       const svg = d3.select(container).append('svg')
         .attr('viewBox', `0 0 ${W} ${H}`)
-        .attr('width', W)
-        .attr('height', H)
+        .attr('preserveAspectRatio', 'xMidYMid meet')
         .style('display', 'block')
+        .style('width', '100%')
+        .style('height', 'auto')
         .style('touch-action', 'pan-y')
 
       const g = svg.append('g')
-      // Natural Earth projection — shows full world cleanly
       const proj = d3.geoNaturalEarth1().scale(W / 6.3).translate([W / 2, H / 2])
       const path = d3.geoPath(proj)
 
@@ -155,10 +149,10 @@ export default function Map({ projects, accent = '#ff5722' }: Props) {
             .attr('d', (d: GeoFeature) => path(d as Parameters<typeof path>[0]) ?? '')
             .attr('fill', (d: GeoFeature) => {
               const a3 = ID_TO_A3[String(d.id).padStart(3, '0')]
-              return a3 && byCountry[a3] ? accent : '#ebe7dc'
+              return a3 && byCountry[a3] ? accent : '#e8e3d5'
             })
-            .attr('stroke', '#1a1a1a')
-            .attr('stroke-width', 0.4)
+            .attr('stroke', '#f5f2ea')
+            .attr('stroke-width', 0.6)
             .style('cursor', (d: GeoFeature) => {
               const a3 = ID_TO_A3[String(d.id).padStart(3, '0')]
               return a3 && byCountry[a3] ? 'pointer' : 'default'
@@ -166,19 +160,18 @@ export default function Map({ projects, accent = '#ff5722' }: Props) {
             .style('transition', 'fill 0.15s')
             .on('mouseover', function (this: SVGPathElement, _: MouseEvent, d: GeoFeature) {
               const a3 = ID_TO_A3[String(d.id).padStart(3, '0')]
-              if (a3 && byCountry[a3]) d3.select(this).attr('fill', '#1a1a1a')
+              if (a3 && byCountry[a3]) d3.select(this).attr('fill', '#0f2340')
             })
             .on('mouseout', function (this: SVGPathElement, _: MouseEvent, d: GeoFeature) {
               const a3 = ID_TO_A3[String(d.id).padStart(3, '0')]
-              d3.select(this).attr('fill', a3 && byCountry[a3] ? accent : '#ebe7dc')
+              d3.select(this).attr('fill', a3 && byCountry[a3] ? accent : '#e8e3d5')
             })
             .on('click', (_: MouseEvent, d: GeoFeature) => {
               const a3 = ID_TO_A3[String(d.id).padStart(3, '0')]
               if (a3 && byCountry[a3]) openModal(a3)
             })
 
-          // Badges
-          const MARKER_R = 9
+          const MARKER_R = 10
           const markersG = g.append('g')
           Object.entries(byCountry).forEach(([iso, ps]) => {
             const coord = CENTROIDS[iso]
@@ -186,11 +179,12 @@ export default function Map({ projects, accent = '#ff5722' }: Props) {
             const [x, y] = proj(coord) ?? [0, 0]
             markersG.append('circle')
               .attr('cx', x).attr('cy', y).attr('r', MARKER_R)
-              .attr('fill', '#f5f2ea').attr('stroke', '#1a1a1a').attr('stroke-width', 1)
+              .attr('fill', '#ffffff').attr('stroke', '#1a1a1a').attr('stroke-width', 1.2)
             markersG.append('text')
-              .attr('x', x).attr('y', y + 3)
+              .attr('x', x).attr('y', y + 3.5)
               .attr('text-anchor', 'middle')
-              .attr('font-family', 'monospace').attr('font-size', 9).attr('font-weight', 700)
+              .attr('font-family', SANS).attr('font-size', 10).attr('font-weight', 600)
+              .attr('fill', '#1a1a1a')
               .attr('pointer-events', 'none')
               .text(ps.length)
             markersG.append('circle')
@@ -199,7 +193,6 @@ export default function Map({ projects, accent = '#ff5722' }: Props) {
               .on('click', () => openModal(iso))
           })
 
-          // Zoom
           const zoom = d3.zoom().scaleExtent([1, 8])
             .filter((evt: Event) => {
               if ((evt as TouchEvent).touches) return (evt as TouchEvent).touches.length >= 2
@@ -208,20 +201,20 @@ export default function Map({ projects, accent = '#ff5722' }: Props) {
             .on('zoom', (evt: { transform: { k: number } }) => {
               g.attr('transform', evt.transform)
               const k = evt.transform.k
-              markersG.selectAll('circle:nth-child(3n+1)').attr('r', MARKER_R / k).attr('stroke-width', 1 / k)
-              markersG.selectAll('text').attr('font-size', 9 / k)
+              markersG.selectAll('circle:nth-child(3n+1)').attr('r', MARKER_R / k).attr('stroke-width', 1.2 / k)
+              markersG.selectAll('text').attr('font-size', 10 / k)
               markersG.selectAll('circle:nth-child(3n+3)').attr('r', (MARKER_R + 2) / k)
             })
           svg.call(zoom)
 
-          // Zoom buttons
           if (!container) return
           const zoomEl = document.createElement('div')
-          zoomEl.style.cssText = 'position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:2px;background:#f5f2ea;border:1.5px solid #1a1a1a;'
+          zoomEl.style.cssText = 'position:absolute;top:12px;right:12px;display:flex;flex-direction:column;background:#ffffff;border:1px solid #1a1a1a;overflow:hidden;'
+          const btn = 'width:32px;height:32px;background:#ffffff;border:none;cursor:pointer;font-size:16px;font-family:' + SANS + ';color:#1a1a1a;font-weight:500;padding:0;display:flex;align-items:center;justify-content:center;'
           zoomEl.innerHTML = `
-            <button data-z="in" style="width:28px;height:28px;background:transparent;border:none;cursor:pointer;font-size:16px;font-family:monospace;">+</button>
-            <button data-z="out" style="width:28px;height:28px;background:transparent;border-top:1px solid #1a1a1a;border-left:none;border-right:none;border-bottom:none;cursor:pointer;font-size:16px;font-family:monospace;">−</button>
-            <button data-z="reset" style="width:28px;height:28px;background:transparent;border-top:1px solid #1a1a1a;border-left:none;border-right:none;border-bottom:none;cursor:pointer;font-size:14px;font-family:monospace;">⟲</button>`
+            <button data-z="in" style="${btn}">+</button>
+            <button data-z="out" style="${btn}border-top:1px solid #e5e0d4;">−</button>
+            <button data-z="reset" style="${btn}border-top:1px solid #e5e0d4;font-size:13px;">↺</button>`
           container.appendChild(zoomEl)
           zoomEl.addEventListener('click', e => {
             const b = (e.target as HTMLElement).dataset.z
@@ -233,7 +226,12 @@ export default function Map({ projects, accent = '#ff5722' }: Props) {
     }
 
     const timer = setTimeout(render, 0)
-    cleanup = () => clearTimeout(timer)
+    const onResize = () => render()
+    window.addEventListener('resize', onResize)
+    cleanup = () => {
+      clearTimeout(timer)
+      window.removeEventListener('resize', onResize)
+    }
     return cleanup
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects, accent])
